@@ -1,0 +1,789 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Retrack System</title>
+    <style type="text/css">
+        .test{
+            width :1420px;height :695px;border-top:8px solid;border-left:10px solid;border-right:10px solid;border-bottom:25px solid;
+            border-image: -webkit-linear-gradient(to right bottom,lightseagreen,yellowgreen) 30 30;
+            border-image:-moz-linear-gradient(to right bottom,lightseagreen ,yellowgreen) 30 30;
+            border-image:linear-gradient(to right bottom,lightseagreen,yellowgreen) 30 30;
+        }
+        body {
+            height: 100%;
+            margin: 0px;
+            padding: 0px
+        }
+        html {
+            width:100%
+        }
+
+        #container {
+            overflow: hidden;
+            width: 1385px;
+            height: 695px;
+            margin:0;
+            font-family:"微软雅黑";
+            align:"right";
+            z-index:-1;
+        }
+
+        .d4{                      /*三角形*/
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+            border-bottom: 45px solid deepskyblue;
+            z-index:1;
+            margin-left: 125px;
+            margin-top:60px;
+            transform-origin:50% 50%;
+            transform: rotate(0deg);
+        }
+        .circleprogress{
+            width: 50px;
+            height: 50px;
+            border:5px solid black;
+            margin-left: 109px;
+            margin-top:53px;
+            position: absolute;
+            border-radius: 50%;
+            z-index:1;
+        }
+
+        .d1{
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            border-radius:30px;
+            background: lightseagreen linear-gradient(to right,pink,purple);
+            z-index:1;
+            margin-left: 1319px;
+            margin-top:623px;
+            transform-origin:50% 50%;
+            transform: rotate(0deg);
+        }
+
+        .sx1{
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            transform: rotate(315deg);
+            border-radius: 30px 0 0;
+            background-color: white;
+            z-index:2;
+            margin-left: 1319px;
+            margin-top:623px;
+            transform-origin:100% 100%;
+            /*-webkit-animation: an1 2s infinite linear; */
+        }
+
+
+        .sx2{
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            transform: rotate(45deg);
+            border-radius: 30px 0 0;
+            background-color: white;
+            z-index:2;
+            margin-left: 1319px;
+            margin-top:623px;
+            transform-origin:100% 100%;
+            /*-webkit-animation: an2 2s infinite linear;*/
+        }
+
+        .sx3{
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            transform: rotate(135deg);
+            border-radius: 30px 0 0;
+            background-color: white;
+            z-index:2;
+            margin-left: 1319px;
+            margin-top:623px;
+            transform-origin:100% 100%;
+            /*-webkit-animation: an2 2s infinite linear;*/
+        }
+
+        .sx4{
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            transform: rotate(225deg);
+            border-radius: 30px 0 0;
+            background-color: white;
+            z-index:2;
+            margin-left: 1319px;
+            margin-top:623px;
+            transform-origin:100% 100%;
+            /*-webkit-animation: an2 2s infinite linear;*/
+        }
+        .sx4::after {
+            display: inline-block;
+            content: '速度';
+            transform: rotate(135deg) ;
+            /*transform: rotateY(-180deg) rotateX(180deg);   !* 水平镜像翻转 *!*/
+            transform-origin: bottom left;
+            /*margin-bottom:0px;*/
+        }
+        .item {
+            border-radius:2em;
+            width:15px;
+            height: 655px;
+            float: left;
+            /*background-color: #09f;*/
+            background: lightseagreen linear-gradient(to bottom,lightseagreen,palevioletred);
+            /*background-size: 200%;*/
+            transition: background-color .5s;
+            margin-right: 10px;
+            margin-left: 10px;
+            margin-top:20px;
+            transform: rotate(180deg);
+            transform-origin:50% 327px;        /*设置旋转中心为元素中心*/
+        }
+        .item::after {
+            display: inline-block;
+            content: '海拔高度';
+            /*transform:  perspective(0.5em) rotateX(180deg);*/
+            transform: rotateY(-180deg) rotateX(180deg);   /* 水平镜像翻转 */
+            transform-origin: bottom left;
+            margin-left:16px;
+        }
+
+        #div1 .active {background:#fde8d0; }
+        #div1 div{width:90px;height:20px;background:#e09e87;border:1px solid #999;display:none;margin-top:1px}
+    </style>
+    <!--    <script type="text/javascript" src="bmap_offline_api_v3.0_min.js"></script>-->
+    <script type="text/javascript" src="map_load.js"></script>
+    <script src="shujvpianyi.js"></script>
+</head>
+
+
+<body>
+<div class="test" >
+    <div class="item" id="item1"></div>
+    <div class="d4" id="d5"></div>
+    <div class="d1" id="d2"></div>
+    <div class="circleprogress" id="x1"></div>
+    <div class="d3" id="d6"></div>
+    <div class="sx1" id="x2"></div>
+    <div class="sx2" id="x3"></div>
+    <div class="sx3" id="x4"></div>
+    <div class="sx4" id="x5"></div>
+    <div id="container"></div>
+    <div id="div1" style="width:170px;float:left;margin-top: 0px">
+        <input class="active" type="button"  value="1x"/>
+        <input type="button" value="2x"/>
+        <div style="display:block; float:left;text-align:center">自动变速</div>
+        <div style="float:left;text-align:center">倍速模式</div>
+    </div>
+    <div style="width:520px;float:left;margin-top:0px">
+        <input id="file" type="file" style="float:left;width:200px;margin-top:1px" />
+        <input id="Key0" type="button" value="TranToBD09" style="float:left;margin-top:1px;margin-right: 2px"/>
+        <input id="Key1" type="button" value="Start" style="float:left;margin-top:2px;margin-right: 2px"/>
+        <input id="Key2" type="button" value="Stop" style="float:left;margin-top:2px;margin-right: 2px"/>
+        <input id="Key3" type="button" value="Auto" style="float:left;margin-top:2px;margin-right: 2px"/>
+        <input id="Key4" type="button" value="Hmode" style="float:left;margin-top:2px;margin-right: 2px"/>
+    </div>
+    <div style="width:730px;float:right;margin-top:0px">
+        <div id="speed_1" style="width:100px;height:20px;background:red;float:right;margin-right: 2px ;text-align:center;margin-top:2px">200＜v</div>
+        <div id="speed_2" style="width:100px;height:20px;background:purple;float:right;margin-right: 5px ;text-align:center;margin-top:2px">160＜v≤200</div>
+        <div id="speed_3" style="width:100px;height:20px;background:orange;float:right;margin-right: 5px;text-align:center;margin-top:2px">120＜v≤160</div>
+        <div id="speed_4" style="width:100px;height:20px;background:darkcyan;float:right;margin-right: 5px;text-align:center;margin-top:2px">40＜v≤120</div>
+        <div id="speed_5" style="width:100px;height:20px;background:yellow;float:right;margin-right: 5px;text-align:center;margin-top:2px">5＜v≤40</div>
+        <div id="speed_6" style="width:100px;height:20px;background:deepskyblue;float:right;margin-right: 5px;text-align:center;margin-top:2px">0＜v≤5</div>
+        <div id="txt" style="width:100px;height:20px;background:#e09e87;float:right;margin-right: 1px;text-align:center;margin-top:2px">速度(km/h):</div>
+    </div>
+
+</div>
+<!--<p id="display" style="text-align:center;border:8px solid;margin: 0px;-->
+<!--        border-image:-webkit-linear-gradient(lightseagreen,yellowgreen) 30 30;-->
+<!--        border-image:-moz-linear-gradient(lightseagreen ,yellowgreen) 30 30;-->
+<!--        border-image:linear-gradient(lightseagreen,yellowgreen) 30 30;" >-->
+<p id="display" style="text-align:center;margin: 0px;border-right:10px solid;border-left:10px solid;
+    border-right-color: yellowgreen;border-left-color: mediumseagreen;border-bottom:8px solid;
+    border-bottom-color: mediumseagreen;">
+    请选择txt文件并点击TranToBD09转换目标坐标系,完成后点击Start将开始重现运动轨迹并获取相应数据信息（时间、经纬度、速度、航向角、海拔高度）
+</p>
+</body>
+</html>
+
+<script>
+    window.onload=function(){
+        var Key0_On=document.getElementById('Key0');//读txt文件
+        var Key1_On=document.getElementById('Key1');//开始
+        var Key2_On=document.getElementById('Key2');//停止
+        var Key3_On=document.getElementById('Key3');//换级模式
+        var Key4_On=document.getElementById('Key4');//缓存模式
+        var arrow=document.getElementById("d5");
+        var shanxing1=document.getElementById("x2");
+        var shanxing2=document.getElementById("x3");
+        var shanxing3=document.getElementById("x4");
+        var degree = 0;
+        var intdegree=0;
+        var timer=null;
+        var	ZhuanHuanTemp=[];
+        var p=0;
+        var paintpoint=2;//初值两点一线
+        var huadiansudu=0;
+        //var numtemp=0;
+        var clicknum=0;
+        var speed40 =0;
+        var speed70=0;
+        var speed120=0;
+        var speed160=0;
+        var speed500=0;
+        var speed900=0;
+        var speed=0;
+        var biansu=1;
+        var biansu_temp=0;
+        var qingchu_temp=1;
+        var disucount=0;
+        var chongxian=0;
+        // var polyline1=[];
+        var j=0;
+        var heightper=0;  //根据海拔改变柱形
+        var speedper=0;   //根据速度改变扇形
+        var shanxingtemp=0;
+        var myDiv=document.getElementById('div1');
+        var testBtn=myDiv.getElementsByTagName('input');
+        var testDiv=myDiv.getElementsByTagName('div');
+        for(var i=0;i<testBtn.length;i++)
+        {
+            testBtn[i].index=i;
+            testBtn[i].onclick=function()
+            {
+                for(var i=0;i<testBtn.length;i++)
+                {
+                    testBtn[i].className='';
+                    testDiv[i].style.display='none';
+                }
+                this.className='active';
+                testDiv[this.index].style.display='block';
+                huadiansudu=parseInt(this.value);
+                if(huadiansudu!=1)             //变速换挡
+                {
+                    if(clicknum==0)
+                    {
+                        paintpoint=2;
+                        clicknum++;
+                        this.value="2x";
+                    }
+                    else if(clicknum==1)
+                    {
+                        paintpoint=4;
+                        clicknum++;
+                        this.value="3x";
+                    }
+                    else if(clicknum==2)
+                    {
+                        paintpoint=6;
+                        clicknum=0;
+                        this.value="4x";
+                    }
+                }
+                else{               //默认两点一线
+                    clicknum=0;
+                    //paintpoint=2;
+                }
+            };
+        }
+        //数据转换
+        Key0_On.onclick=function()
+        {
+            // document.getElementById("item1").style.height="400px";
+            ZhuanHuanTemp.length=0;
+            map.clearOverlays();
+            p=0;
+            clearInterval(timer);	//停止定时器
+            document.getElementById("display").innerHTML ="已转换文件数据,点击Start开始运行！";
+            var file=document.getElementById("file").files[0];
+            var reader=new FileReader();
+            reader.readAsText(file);
+            reader.onload=function()
+            {
+                var tempArray = [];            // 新建一个用于存放坐标的数组
+                var GPSDataArray =this.result.split(/[(\r\n)\r\n]+/);   // 按行分割字符串,\r\r\n两回车一换行
+                for (var i = 0; i< GPSDataArray.length; i++) {
+                    if (GPSDataArray[i].search("GPGGA") != -1){          // 查找以$GPGGA开头的数据行
+                        var GPSLocateArray = GPSDataArray[i].split(",");
+                        if ((!GPSLocateArray[2]) || (!GPSLocateArray[4])) {
+                            continue;
+                        }
+                        if (!isNaN(parseFloat(GPSLocateArray[9]))) {
+                            var ggheight = parseFloat(GPSLocateArray[9]);
+                        }           //高度
+                        else{
+                            var ggheight = -1;
+                        }
+                    }
+                    if (GPSDataArray[i].search("GPRMC") != -1) {
+                        var GPSLocateArray = GPSDataArray[i].split(",");
+                        if ((GPSLocateArray[2] != 'A') || (!GPSLocateArray[3]) || (!GPSLocateArray[5])) {
+                            continue;
+                        }
+                        // 将度分秒形式的经纬度转换为度
+                        var gglat = parseInt(GPSLocateArray[3].slice(0, 2)) + parseFloat(GPSLocateArray[3].slice(2)) / 60;
+                        var gglng = parseInt(GPSLocateArray[5].slice(0, 3)) + parseFloat(GPSLocateArray[5].slice(3)) / 60;
+
+                        if (!isNaN(parseFloat(GPSLocateArray[7]))) {
+                            var ggspeed = parseFloat(GPSLocateArray[7]) * 1.852;
+                        }
+                        else{
+                            var ggspeed = -1;
+                        }
+                        if (!isNaN(parseFloat(GPSLocateArray[8]))) {
+                            var ggcourseangle = parseFloat(GPSLocateArray[8]);
+                        }//航向角
+                        else{
+                            var ggcourseangle = -1;
+                        }
+                        if (!isNaN(parseFloat(GPSLocateArray[9]))) {
+                            var ggddmmyy = GPSLocateArray[9];//<9> UTC日期，ddmmyy（日月年）格式
+                        }
+                        if (!isNaN(parseFloat(GPSLocateArray[1]))) {
+                            var gghhmmss = GPSLocateArray[1];//<1> UTC时间，hhmmss（时分秒）格式
+                        }
+                        var yyyy = "20" + ggddmmyy.substr(4, 2);
+                        var MM = ggddmmyy.substr(2, 2);
+                        var dd = ggddmmyy.substr(0, 2);
+
+                        var hh = gghhmmss.substr(0, 2);
+                        var mm = gghhmmss.substr(2, 2);
+                        var ss = gghhmmss.substr(4, 2);
+                        var new_datetime = yyyy + "-" + MM+ "-" + dd + " " + hh + ":" + mm + ":" + ss;// 处理成为时间戳
+                        var timestamp = new Date(Date.parse(new_datetime));
+                        timestamp = timestamp.getTime();
+                        timestamp = timestamp/1000;
+                        timestamp = timestamp+8*60*60;          // 增加8个小时，北京时间比utc时间多八个时区
+
+                        var beijing_datetime = new Date(parseInt(timestamp) * 1000).toLocaleString().replace(/年|月/g, "-").replace(/日/g, " ");
+                        tempArray.push({lng: gglng, lat: gglat,speed: ggspeed,bjtime:beijing_datetime,courseangle:ggcourseangle,height:ggheight});
+                    }
+                }
+                Key0_On.value="共转换"+tempArray.length+"个";
+                PosTrans(tempArray);
+                // numtemp=ZhuanHuanTemp.length;
+            }
+
+
+        };
+        Key1_On.onclick=function(){
+            deletepoint(200,150);
+            timer=setInterval(function(){
+                dynamicLine();		//动态绘图
+            },70);				//定时器间隔 单位ms
+        };
+        Key2_On.onclick=function(){
+            clearInterval(timer);	//停止定时器
+            if(p>2000)
+            {
+                chongxian=p-2000;
+            }
+            else
+            {
+                chongxian=0;
+            }
+            tianchong(chongxian);
+            document.getElementById("display").innerHTML ="停止绘制。当前进度及运动信息:"+p+"/"+ZhuanHuanTemp.length+"北京时间:"+ZhuanHuanTemp[p].bjtime+"&nbsp;|&nbsp;"+ "经度(°E):"+ZhuanHuanTemp[p].lng.toFixed(6) + "&nbsp;|&nbsp;"  + "纬度(°N):" + ZhuanHuanTemp[p].lat.toFixed(6)+"&nbsp;|&nbsp;"+"速度(km/h):"+ZhuanHuanTemp[p].speed.toFixed(3)+"&nbsp;|&nbsp;"+"航向角(°):"+ZhuanHuanTemp[p].courseangle.toFixed(1)+"&nbsp;|&nbsp;"+"海拔高度(m):"+ZhuanHuanTemp[p].height.toFixed(1);
+        };
+        //添加线的覆盖物
+        function addLine(points){
+            var linePoints = [],pointsLen = points.length,i,polyline;
+            if(pointsLen == 0){
+                return;
+            }
+            // 创建标注对象并添加到地图
+            for(i = 0;i <pointsLen;i++){
+                linePoints.push(new BMap.Point(points[i].lng,points[i].lat));
+            }
+            polyline = new BMap.Polyline(linePoints, {strokeColor:"deepskyblue", strokeWeight:5, strokeOpacity:1});   //创建折线
+            heightper = Math.round(points[0].height*655/11000)+"px";
+                document.getElementById("item1").style.height   = heightper;
+
+            shanxingtemp=Math.round(points[0].speed*270/1020);
+            if((shanxingtemp>=0)&&(shanxingtemp<45))
+            {
+                speedper = (shanxingtemp+315)+"deg";
+                shanxing1.style.transform = "rotate("+ speedper +")";
+                shanxing2.style.transform = "rotate(45deg)";
+                shanxing3.style.transform = "rotate(135deg)";
+            }
+            else if((shanxingtemp>=45)&&(shanxingtemp<90))
+            {
+                speedper = (shanxingtemp-45)+"deg";
+                shanxing1.style.transform = "rotate("+ speedper +")";
+                shanxing2.style.transform = "rotate(45deg)";
+                shanxing3.style.transform = "rotate(135deg)";
+            }
+            else if((shanxingtemp>=90)&&(shanxingtemp<180))
+            {
+                speedper=(shanxingtemp-45)+"deg";
+                shanxing1.style.transform = "rotate(225deg)";
+                shanxing2.style.transform = "rotate("+ speedper +")";
+                shanxing3.style.transform = "rotate(135deg)";
+            }
+            else
+            {
+                speedper=(shanxingtemp-45)+"deg";
+                shanxing1.style.transform = "rotate(225deg)";
+                shanxing2.style.transform = "rotate(225deg)";
+                shanxing3.style.transform = "rotate("+ speedper +")";
+            }
+            intdegree=Math.round(points[0].courseangle);
+            degree= intdegree +"deg";
+            arrow.style.transform = "rotate("+ degree +")";
+            if(points[0].speed<=5){
+                polyline.setStrokeColor("deepskyblue");
+                arrow.style.borderBottom= "45px solid deepskyblue";
+            }
+            else if(points[0].speed>5&&points[0].speed<=40){
+                polyline.setStrokeColor("yellow");
+                arrow.style.borderBottom= "45px solid yellow";
+            }
+            else if(points[0].speed>40&&points[0].speed<=120){
+                polyline.setStrokeColor("darkcyan");
+                arrow.style.borderBottom= "45px solid darkcyan";
+            }
+            else if(points[0].speed>120&&points[0].speed<=160){
+                polyline.setStrokeColor("orange");
+                arrow.style.borderBottom= "45px solid orange";
+            }
+            else if(points[0].speed>160&&points[0].speed<=200){
+                polyline.setStrokeColor("purple");
+                arrow.style.borderBottom= "45px solid purple";
+            }
+            else if(points[0].speed>200){
+                polyline.setStrokeColor("red");
+                arrow.style.borderBottom= "45px solid red";
+            }
+            else{
+                console.log("NO");
+                console.log(points[0].speed);
+            }
+            // map.centerAndZoom(new BMap.Point(ZhuanHuanTemp[p].lng, ZhuanHuanTemp[p].lat));
+            map.addOverlay(polyline);   //增加折线
+            j++;
+        }
+        function dynamicLine(){
+            var disutemp=0;
+            len = ZhuanHuanTemp.length;
+            newLinePoints = ZhuanHuanTemp.slice(p, p+paintpoint);
+            addLine(newLinePoints);//增加轨迹线
+            map.setCenter(new BMap.Point(ZhuanHuanTemp[p].lng,ZhuanHuanTemp[p].lat));
+            if(biansu &&((ZhuanHuanTemp[p].lng>=106.453)||(ZhuanHuanTemp[p].lat<=32.630))) {
+                if ((ZhuanHuanTemp[p].speed > 55) && (ZhuanHuanTemp[p].speed <= 90)) {
+                    speed40++;
+                    if (speed40 > 5) {
+                        map.centerAndZoom(new BMap.Point(ZhuanHuanTemp[p].lng, ZhuanHuanTemp[p].lat), 17);
+                        speed70 = 0;
+                        speed120 = 0;
+                        speed160 = 0;
+                        speed900 = 0;
+                        speed = 0;
+                        paintpoint=2;
+                        deletepoint(120,70);
+                    }
+                }  // 设置中心点
+                else if ((ZhuanHuanTemp[p].speed > 90) && (ZhuanHuanTemp[p].speed <= 120)) {
+                    speed70++;
+                    if (speed70 > 3) {
+                        map.centerAndZoom(new BMap.Point(ZhuanHuanTemp[p].lng, ZhuanHuanTemp[p].lat), 17);
+                        speed40 = 0;
+                        speed120 = 0;
+                        speed160 = 0;
+                        speed900 = 0;
+                        speed = 0;
+                        paintpoint=2;
+                        deletepoint(150,80);
+                    }
+                }  // 设置中心点
+                else if ((ZhuanHuanTemp[p].speed > 120) && (ZhuanHuanTemp[p].speed <= 160)) {
+
+                    speed120++;
+                    if (speed120 > 3) {
+                        map.centerAndZoom(new BMap.Point(ZhuanHuanTemp[p].lng, ZhuanHuanTemp[p].lat), 17);
+                        speed40 = 0;
+                        speed70 = 0;
+                        speed160 = 0;
+                        speed900 = 0;
+                        speed = 0;
+                        paintpoint=2;
+                        deletepoint(160,90);
+                    }
+                }  // 设置中心点
+                else if ((ZhuanHuanTemp[p].speed > 160) && (ZhuanHuanTemp[p].speed <= 800)) {
+                    speed160++;
+                    if (speed160 > 2) {
+                        speed40 = 0;
+                        speed70 = 0;
+                        speed120 = 0;
+                        speed900 = 0;
+                        speed = 0;
+                        paintpoint=2;
+                        if(ZhuanHuanTemp[p].speed > 350) {
+                            speed500++;
+                            if (speed500 > 2) {
+                                map.centerAndZoom(new BMap.Point(ZhuanHuanTemp[p].lng, ZhuanHuanTemp[p].lat), 16);
+                            }
+                        }
+                        else{
+                            speed500=0;
+                            map.centerAndZoom(new BMap.Point(ZhuanHuanTemp[p].lng, ZhuanHuanTemp[p].lat), 17);
+                        }
+                        deletepoint(150,100);
+                    }  // 设置中心点
+                } else if (ZhuanHuanTemp[p].speed > 800) {
+                    speed900++;
+                    if (speed900 > 1) {
+                        speed40 = 0;
+                        speed70 = 0;
+                        speed120 = 0;
+                        speed160 = 0;
+                        speed = 0;
+                        paintpoint=2;
+                        map.centerAndZoom(new BMap.Point(ZhuanHuanTemp[p].lng, ZhuanHuanTemp[p].lat), 16);
+                        deletepoint(60,30);
+                    }
+                }  // 设置中心点
+                else {
+                    speed++;
+                    if (speed > 4) {
+                        speed70 = 0;
+                        speed40 = 0;
+                        speed120 = 0;
+                        speed160 = 0;
+                        speed900 = 0;
+                        paintpoint=4;
+                        map.centerAndZoom(new BMap.Point(ZhuanHuanTemp[p].lng, ZhuanHuanTemp[p].lat), 17);
+                        //deletepoint(40,20);
+                        if(speed>=500)
+                        {
+                            disutemp=500+disutemp;
+                            deletepointlowspeed(disutemp,80,2);
+                        }
+                    }
+                }  // 设置中心点
+            }
+            else if(biansu==0){
+                //map.centerAndZoom(new BMap.Point(ZhuanHuanTemp[p].lng, ZhuanHuanTemp[p].lat), 18);
+                // deletepoint(40,20);
+                if ((ZhuanHuanTemp[p].speed > 40) && (ZhuanHuanTemp[p].speed <= 70)) {
+                    speed40++;
+                    if (speed40 > 5) {
+                        speed70 = 0;
+                        speed120 = 0;
+                        speed160 = 0;
+                        speed900 = 0;
+                        speed = 0;
+                        //paintpoint=3;
+                        deletepoint(150,80);
+                    }
+                }  // 设置中心点
+                else if ((ZhuanHuanTemp[p].speed > 70) && (ZhuanHuanTemp[p].speed <= 120)) {
+                    speed70++;
+                    if (speed70 > 3) {
+                        speed40 = 0;
+                        speed120 = 0;
+                        speed160 = 0;
+                        speed900 = 0;
+                        speed = 0;
+                       // paintpoint=2;
+                        deletepoint(140,75);
+                    }
+                }  // 设置中心点
+                else if ((ZhuanHuanTemp[p].speed > 120) && (ZhuanHuanTemp[p].speed <= 160)) {
+
+                    speed120++;
+                    if (speed120 > 3) {
+                        speed40 = 0;
+                        speed70 = 0;
+                        speed160 = 0;
+                        speed900 = 0;
+                        speed = 0;
+                        //paintpoint=2;
+                        deletepoint(135,70);
+                    }
+                }  // 设置中心点
+                else if ((ZhuanHuanTemp[p].speed > 160) && (ZhuanHuanTemp[p].speed <= 800)) {
+                    speed160++;
+                    if (speed160 > 2) {
+                        speed40 = 0;
+                        speed70 = 0;
+                        speed120 = 0;
+                        speed900 = 0;
+                        speed = 0;
+                        //paintpoint=2;
+                        deletepoint(130,69);
+                    }  // 设置中心点
+                } else if (ZhuanHuanTemp[p].speed > 800) {
+                    speed900++;
+                    if (speed900 > 1) {
+                        speed40 = 0;
+                        speed70 = 0;
+                        speed120 = 0;
+                        speed160 = 0;
+                        speed = 0;
+                      //  paintpoint=2;
+                        deletepoint(120,60);
+                    }
+                }  // 设置中心点
+                else {
+                    speed++;
+                    if (speed > 4) {
+                        speed70 = 0;
+                        speed40 = 0;
+                        speed120 = 0;
+                        speed160 = 0;
+                        speed900 = 0;
+                      //  paintpoint=4;
+                        // deletepoint(40,20);
+                    }
+                }  // 设置中心点
+            }
+            else{
+                map.centerAndZoom(new BMap.Point(ZhuanHuanTemp[p].lng, ZhuanHuanTemp[p].lat), 13);
+                paintpoint=4;
+                deletepoint(250,100);
+            }
+            p+=paintpoint-1;
+            document.getElementById("display").innerHTML ="当前绘制进度:"+p+"/"+ZhuanHuanTemp.length+"&nbsp;&nbsp;&nbsp;&nbsp;运动信息："+"北京时间:"+ZhuanHuanTemp[p].bjtime+"&nbsp;|&nbsp;"+ "经度(°E):"+ZhuanHuanTemp[p].lng.toFixed(6) + "&nbsp;|&nbsp;"  + "纬度(°N):" + ZhuanHuanTemp[p].lat.toFixed(6)+"&nbsp;|&nbsp;"+"速度(km/h):"+ZhuanHuanTemp[p].speed.toFixed(3)+"&nbsp;|&nbsp;"+"航向角(°):"+ZhuanHuanTemp[p].courseangle.toFixed(1)+"&nbsp;|&nbsp;"+"海拔高度(m):"+ZhuanHuanTemp[p].height.toFixed(1);
+            if(p>ZhuanHuanTemp.length-paintpoint)
+            {
+                clearInterval(timer);
+                while(p==ZhuanHuanTemp.length-1){
+                    var lastLinePoints = ZhuanHuanTemp.slice(p, p+2);//最后两个点用来画线。（数组第0、1、2个元素……）  数组中第p个元素开始，第p+2个元素结
+                    addLine(lastLinePoints);//增加轨迹线
+                    p++;
+                }
+                //tianchong(p);
+                p=0;
+            }
+        }
+
+        Key3_On.onclick=function()
+        {
+            // map.clearOverlays();
+            // deletepoint();
+            if(biansu_temp)
+            {
+                biansu=1;
+                biansu_temp=0;
+                Key3_On.value="Auto";
+            }
+            else
+            {
+                biansu=0;
+                biansu_temp=1;
+                Key3_On.value="manul";
+            }
+        }
+
+        Key4_On.onclick=function()
+        {
+            // map.clearOverlays();
+            // deletepoint();
+            if(qingchu_temp)
+            {
+                qingchu_temp=0;
+                Key4_On.value="Lmode";
+            }
+            else
+            {
+                qingchu_temp=1;
+                Key4_On.value="Hmode";
+            }
+        }
+
+        function tianchong(tcnun)
+        {
+            while(tcnun<=p) {
+                newLinePoints = ZhuanHuanTemp.slice(tcnun, tcnun + paintpoint);
+                addLine(newLinePoints);//增加轨迹线
+                tcnun += paintpoint - 1;
+            }
+            if(tcnun>p-paintpoint)
+            {
+                while(tcnun==p-1){
+                    var lastLinePoints = ZhuanHuanTemp.slice(tcnun, tcnun+2);//最后两个点用来画线。（数组第0、1、2个元素……）  数组中第p个元素开始，第p+2个元素结
+                    addLine(lastLinePoints);//增加轨迹线
+                    tcnun++;
+                }
+            }
+        }
+
+        function deletepoint(pointnum,deletenum) {     //输入参数第一个为达到的总点数，第二个为保留点数
+            if(qingchu_temp==1) {
+                if (pointnum < deletenum) {
+                    return false;
+                }
+                var allOverlay = map.getOverlays();
+                if (allOverlay.length > pointnum) {
+                    var temp = allOverlay.length - deletenum;
+                    for (var j = 0; j < temp; j++) {
+                        map.removeOverlay(allOverlay[j]);
+                    }
+                }
+            }
+            else
+            {return 0;}
+        }
+
+        function deletepointlowspeed(pointnum,deletenum,jiange) {     //输入参数第一个为达到的总点数，第二个为保留点数
+            if(qingchu_temp==1) {
+                if (pointnum < deletenum) {
+                    return false;
+                }
+                var allOverlay = map.getOverlays();
+                var pointcount=0;
+                if (allOverlay.length > pointnum) {
+                    var temp = allOverlay.length - deletenum;
+                    for (var j = disucount; j < temp; j++) {
+                        pointcount++;
+                        if(pointcount>=jiange)
+                        {
+                            map.removeOverlay(allOverlay[j]);
+                            disucount++;
+                            pointcount=0;
+                        }
+                    }
+                }
+            }
+            else
+            {return 0;}
+        }
+
+        function PosTrans(points){
+            for(var i=0;i<points.length;i++){
+                ZhuanHuanTemp.push({lng:wgs84tobd09(points[i].lng, points[i].lat)[0],
+                    lat:wgs84tobd09(points[i].lng, points[i].lat)[1],
+                    speed:points[i].speed,
+                    bjtime:points[i].bjtime,
+                    courseangle:points[i].courseangle,
+                    height:points[i].height
+                })
+            }
+        }
+        // var runloop=0;
+        // var runlooptemp=1;
+
+        //创建地图
+        var map = new BMap.Map("container");
+        map.centerAndZoom(new BMap.Point(104.088, 30.638), 19);  // 设置中心点
+        map.addControl(new BMap.MapTypeControl()); //可拖拽
+        map.enableScrollWheelZoom(true);  //滚轮实现方法缩小
+
+        var top_left_navigation = new BMap.NavigationControl();  //左上角，添加默认缩放平移控件
+        var top_left_control = new BMap.ScaleControl({anchor: BMAP_ANCHOR_TOP_LEFT});// 左上角，添加比例尺
+
+        map.addControl(top_left_control);
+        map.addControl(top_left_navigation);
+
+
+    }
+
+</script>
